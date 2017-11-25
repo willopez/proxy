@@ -14,6 +14,8 @@ services:
       - certs:/etc/nginx/certs
     labels:
       - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
+    networks:
+      - proxy
 
   dockergen:
     image: jwilder/docker-gen:0.7.3
@@ -28,6 +30,8 @@ services:
       - certs:/etc/nginx/certs
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro
+    networks:
+      - proxy
   
   letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
@@ -44,6 +48,8 @@ services:
       - html:/usr/share/nginx/html
       - certs:/etc/nginx/certs
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - proxy
 
 volumes:
   conf:
@@ -52,6 +58,5 @@ volumes:
   certs:
 
 networks:
-  default:
-    external:
-      name: nginx-proxy
+  proxy:
+    external: true
